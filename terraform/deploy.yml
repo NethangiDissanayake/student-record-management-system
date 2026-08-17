@@ -1,0 +1,40 @@
+---
+- name: Deploy Student Record Management System
+  hosts: app_server
+  become: true
+  tasks:
+    - name: Install Docker
+      shell: |
+        apt update
+        apt install -y docker.io docker-compose
+        systemctl enable docker
+        systemctl start docker
+    - name: Create app directory
+      file:
+        path: /home/ubuntu/app
+        state: directory
+    - name: Write docker-compose.yml
+      copy:
+        dest: /home/ubuntu/app/docker-compose.yml
+        content: |
+          services:
+            backend:
+              image: nethangidissanayake/student-record-backend:latest
+              ports:
+                - "5000:5000"
+              environment:
+                - MONGO_URI=mongodb+srv://nethangidissanayake_db_user:yID63fpoZRwBxhlP@studentrecordcluster.w1s1k2l.mongodb.net/studentDB?appName=StudentRecordCluster
+                - PORT=5000
+              restart: unless-stopped
+            frontend:
+              image: nethangidissanayake/student-record-frontend:latest
+              ports:
+                - "80:80"
+              restart: unless-stopped
+    - name: Pull latest images
+      shell: docker-compose -f /home/ubuntu/app/docker-compose.yml pull
+    - name: Stop and remove old containers
+      shell: docker-compose -f /home/ubuntu/app/docker-compose.yml down
+      ignore_errors: true
+    - name: Start containers
+      shell: docker-compose -f /home/ubuntu/app/docker-compose.yml up -d
