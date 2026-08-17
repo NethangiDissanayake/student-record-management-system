@@ -2,9 +2,6 @@
 
 A full-stack web application for managing student records (Create, Read, Update, Delete), built with the MERN stack and deployed using two parallel DevOps pipelines.
 
-**Index No:** EG/2021/4499
-**Name:** Dissanayake W.M.N.P.
-
 ## Live Deployments
 
 - **Render (managed):** https://student-record-frontend.onrender.com
